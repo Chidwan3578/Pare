@@ -1,8 +1,20 @@
 {
   "name": "@paretools/docker",
   "version": "0.2.0",
+  "mcpName": "io.github.Dave-London/docker",
   "description": "MCP server for Docker with structured, token-efficient output",
   "license": "MIT",
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "structured-output",
+    "docker"
+  ],
+  "homepage": "https://github.com/Dave-London/pare/tree/main/packages/server-docker",
+  "engines": {
+    "node": ">=18"
+  },
   "type": "module",
   "bin": {
     "pare-docker": "./dist/index.js"
