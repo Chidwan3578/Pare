@@ -16,7 +16,7 @@
   ],
   "homepage": "https://github.com/Dave-London/pare/tree/main/packages/server-test",
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   },
   "type": "module",
   "bin": {
