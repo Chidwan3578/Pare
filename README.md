@@ -23,7 +23,7 @@ Every pare tool returns dual output:
 - **`content`** — Human-readable text (for MCP clients that display it)
 - **`structuredContent`** — Typed, schema-validated JSON (for agents)
 
-pare is the first MCP server suite to use `structuredContent` + `outputSchema` — new spec features that enable type-safe, validated structured output.
+pare uses MCP's `structuredContent` + `outputSchema` spec features to deliver type-safe, validated structured output that agents can consume directly.
 
 ## Quick Start
 
