@@ -1,0 +1,41 @@
+{
+  "numTotalTests": 10,
+  "numPassedTests": 9,
+  "numFailedTests": 1,
+  "numPendingTests": 0,
+  "numTodoTests": 0,
+  "startTime": 1707500000000,
+  "success": false,
+  "testResults": [
+    {
+      "name": "/home/user/project/src/__tests__/parser.test.ts",
+      "assertionResults": [
+        { "fullName": "parser > parses valid input", "status": "passed", "failureMessages": [] },
+        { "fullName": "parser > handles empty input", "status": "passed", "failureMessages": [] },
+        { "fullName": "parser > handles malformed input", "status": "passed", "failureMessages": [] },
+        {
+          "fullName": "parser > parses nested structures",
+          "status": "failed",
+          "failureMessages": ["Expected: {\"nested\": true}\nReceived: {\"nested\": false}"],
+          "location": { "line": 28, "column": 5 }
+        }
+      ]
+    },
+    {
+      "name": "/home/user/project/src/__tests__/formatter.test.ts",
+      "assertionResults": [
+        { "fullName": "formatter > formats dates", "status": "passed", "failureMessages": [] },
+        { "fullName": "formatter > formats numbers", "status": "passed", "failureMessages": [] },
+        { "fullName": "formatter > formats strings", "status": "passed", "failureMessages": [] }
+      ]
+    },
+    {
+      "name": "/home/user/project/src/__tests__/utils.test.ts",
+      "assertionResults": [
+        { "fullName": "utils > debounce", "status": "passed", "failureMessages": [] },
+        { "fullName": "utils > throttle", "status": "passed", "failureMessages": [] },
+        { "fullName": "utils > deepClone", "status": "passed", "failureMessages": [] }
+      ]
+    }
+  ]
+}

@@ -50,7 +50,7 @@ Add to your MCP client config (e.g., Claude Code `~/.claude.json`):
 | Package | Tools | Status |
 |---|---|---|
 | [`@paretools/git`](./packages/server-git) | status, log, diff, branch, show | Available |
-| `@paretools/test` | run, coverage (pytest/jest/vitest) | Coming soon |
+| [`@paretools/test`](./packages/server-test) | run, coverage (pytest/jest/vitest) | Available |
 | `@paretools/npm` | install, audit, outdated, list | Planned |
 | `@paretools/docker` | ps, build, logs, compose | Planned |
 | `@paretools/build` | tsc, esbuild, vite | Planned |
