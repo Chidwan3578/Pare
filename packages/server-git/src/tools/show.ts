@@ -6,7 +6,7 @@ import { parseShow } from "../lib/parsers.js";
 import { formatShow } from "../lib/formatters.js";
 import { GitShowSchema } from "../schemas/index.js";
 
-const DELIMITER = "\x00";
+const DELIMITER = "\x1f";
 const SHOW_FORMAT = `%H${DELIMITER}%an${DELIMITER}%ae${DELIMITER}%ar${DELIMITER}%B`;
 
 export function registerShowTool(server: McpServer) {

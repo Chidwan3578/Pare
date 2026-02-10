@@ -15,7 +15,9 @@ export interface RunResult {
 
 /**
  * Executes a command and returns cleaned output with ANSI codes stripped.
- * Uses execFile (not exec) to avoid shell injection.
+ * Uses execFile (not exec) to avoid shell injection. On Windows, shell is
+ * enabled so that .cmd/.bat wrappers (like npx) can be executed — args are
+ * still passed as an array so they remain properly escaped.
  */
 export function run(cmd: string, args: string[], opts?: RunOptions): Promise<RunResult> {
   return new Promise((resolve) => {
@@ -27,6 +29,7 @@ export function run(cmd: string, args: string[], opts?: RunOptions): Promise<Run
         timeout: opts?.timeout ?? 30_000,
         env: opts?.env ? { ...process.env, ...opts.env } : undefined,
         maxBuffer: 10 * 1024 * 1024, // 10 MB
+        shell: process.platform === "win32",
       },
       (error, stdout, stderr) => {
         resolve({
