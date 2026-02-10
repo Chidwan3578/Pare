@@ -1,0 +1,70 @@
+name: Bug Report
+description: Report a bug in a pare MCP server
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which @paretools package is affected?
+      options:
+        - "@paretools/git"
+        - "@paretools/test"
+        - "@paretools/shared"
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+      description: A clear description of what went wrong.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Configure MCP server with...
+        2. Call the tool with...
+        3. Observe error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node version
+      placeholder: "e.g., 22.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: "e.g., Windows 11, macOS 15, Ubuntu 24.04"
+    validations:
+      required: true
+
+  - type: input
+    id: mcp-client
+    attributes:
+      label: MCP client
+      placeholder: "e.g., Claude Code, Cursor, custom"
+
+  - type: input
+    id: package-version
+    attributes:
+      label: Package version
+      placeholder: "e.g., 0.1.0"

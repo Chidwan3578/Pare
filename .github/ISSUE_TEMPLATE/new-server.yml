@@ -1,0 +1,47 @@
+name: New Server Request
+description: Propose a new MCP server for a dev tool
+labels: ["enhancement", "new-server"]
+title: "Add @paretools/<tool-name> server"
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: Tool
+      description: What CLI tool should this server wrap?
+      placeholder: "e.g., docker, cargo, pip"
+    validations:
+      required: true
+
+  - type: textarea
+    id: commands
+    attributes:
+      label: Commands to wrap
+      description: Which subcommands would be most useful?
+      placeholder: |
+        - install — structured install summary
+        - audit — structured vulnerability report
+    validations:
+      required: true
+
+  - type: textarea
+    id: token-savings
+    attributes:
+      label: Token savings potential
+      description: How verbose is the current output? What could be stripped?
+      placeholder: "e.g., includes ANSI colors, progress bars, decorative tables"
+
+  - type: textarea
+    id: prior-art
+    attributes:
+      label: Prior art
+      description: Are there existing MCP servers for this tool?
+
+  - type: dropdown
+    id: volunteer
+    attributes:
+      label: Would you like to implement this?
+      options:
+        - "I'd like to implement this"
+        - "I'm requesting this feature"
+    validations:
+      required: true
