@@ -2,6 +2,14 @@
 
 Thanks for your interest in contributing! Pare is designed to make contributing easy — each server is a self-contained package that wraps a single dev tool.
 
+## Project Structure
+
+Pare is a monorepo managed with **pnpm** and **TurboRepo**.
+
+-   `packages/shared`: Common library containing dual output helpers, command runners, and utilities used by all servers.
+-   `packages/server-*`: One package per CLI tool (e.g., `server-git`, `server-npm`, `server-cargo`).
+-   `packages/tsconfig`, `packages/eslint-config`: Shared configuration files.
+
 ## Development Setup
 
 ```bash
@@ -23,7 +31,7 @@ pnpm test
 
 ## Adding a New Server
 
-This is the most impactful contribution. Each server wraps a CLI tool with structured, token-efficient output.
+Each server wraps a CLI tool with structured, token-efficient output.
 
 ### 1. Scaffold the package
 
@@ -34,130 +42,55 @@ mkdir -p packages/server-<tool>/__tests__
 
 ### 2. Create `package.json`
 
-```json
-{
-  "name": "@paretools/<tool>",
-  "version": "0.1.0",
-  "type": "module",
-  "bin": { "pare-<tool>": "./dist/index.js" },
-  "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.26.0",
-    "@paretools/shared": "workspace:*",
-    "zod": "^4.3.6"
-  }
-}
-```
+Use an existing server (like `server-git`) as a reference for `package.json` dependencies and scripts.
 
-### 3. Define output schemas (Zod)
+### 3. Implement Tools and Schemas
 
-Every tool needs a Zod schema in `src/schemas/index.ts`. Think about what data the agent actually needs — strip everything else.
+Follow the patterns in existing servers:
+-   Define Zod schemas in `src/schemas/index.ts`.
+-   Implement tool logic in `src/tools/`.
+-   Always use `dualOutput` or `compactDualOutput` from `@paretools/shared`.
 
-```typescript
-import { z } from "zod";
+## Adding a Tool to an Existing Server
 
-export const MyToolSchema = z.object({
-  // Only include fields an agent would act on
-  success: z.boolean(),
-  errors: z.array(
-    z.object({
-      file: z.string(),
-      line: z.number(),
-      message: z.string(),
-    }),
-  ),
-});
-```
+To add a new command to an existing server, follow the pattern in [packages/server-git/src/tools/log.ts](file:///c:/Users/Rekha/Documents/GitHub/Pare/packages/server-git/src/tools/log.ts).
 
-### 4. Implement the tool
+1.  Create a new file in `src/tools/<command>.ts`.
+2.  Define a `register<Command>Tool` function.
+3.  Register the tool in `src/index.ts`.
 
-Every tool MUST use `outputSchema` and return dual output:
+## Testing
 
-```typescript
-import { dualOutput } from "@paretools/shared";
-import { MyToolSchema } from "../schemas/index.js";
-
-server.registerTool(
-  "my-command",
-  {
-    title: "My Tool Command",
-    description: "What it does",
-    inputSchema: {
-      /* Zod input params */
-    },
-    outputSchema: MyToolSchema,
-  },
-  async (params) => {
-    const result = await runMyCommand(params);
-    return dualOutput(result, formatHumanReadable);
-  },
-);
-```
-
-### 5. Write tests
-
-Use Vitest. Test the parsers with fixture data (real CLI output captured as strings).
-
-```typescript
-import { describe, it, expect } from "vitest";
-import { parseMyOutput } from "../src/lib/parsers.js";
-
-describe("parseMyOutput", () => {
-  it("parses successful output", () => {
-    const raw = `...real CLI output...`;
-    const result = parseMyOutput(raw);
-    expect(result.success).toBe(true);
-  });
-});
-```
-
-### 6. Create a changeset
+We use **Vitest** for all testing. You can run tests for all packages or a specific one:
 
 ```bash
-pnpm changeset
+pnpm test                          # Run all tests
+pnpm --filter @paretools/git test  # Run tests for a specific package
 ```
 
-Select your new package, choose `minor` version bump, and write a brief description.
+### Test Types
+
+1.  **Unit Tests**: Test parsers and utility functions using static fixtures (captured CLI output).
+2.  **Integration Tests**: Test the full MCP server lifecycle by spawning the server and using an MCP client.
+3.  **Fidelity Tests**: Run real CLI commands and verify that the structured output accurately reflects the raw output.
+
+## Code Style
+
+-   **Prettier**: Formatting is handled automatically by **Husky** and **lint-staged** via a pre-commit hook. You don't need to format your code manually.
+-   **ESLint**: Run `pnpm lint` to check for code quality issues.
 
 ## Key Principles
 
-1. **Always use `outputSchema` + `structuredContent`** — This is Pare's core differentiator.
-2. **Always include human-readable `content`** — Fallback for clients without structuredContent support.
-3. **Strip aggressively** — Only include data an agent would act on. No hints, no decorations.
-4. **Use `execFile`, not `exec`** — Prevents shell injection.
-5. **Test with real output** — Capture actual CLI output as test fixtures.
-
-## Project Structure
-
-```
-packages/
-  shared/          @paretools/shared   — Dual output helper, command runner, ANSI strip
-  server-git/      @paretools/git      — Git operations (10 tools)
-  server-test/     @paretools/test     — Test runners (2 tools)
-  server-npm/      @paretools/npm      — npm operations (7 tools)
-  server-build/    @paretools/build    — Build tools (5 tools)
-  server-lint/     @paretools/lint     — Linters & formatters (5 tools)
-  server-python/   @paretools/python   — Python tools (8 tools)
-  server-docker/   @paretools/docker   — Docker operations (9 tools)
-  server-cargo/    @paretools/cargo    — Rust/Cargo tools (9 tools)
-  server-go/       @paretools/go       — Go tools (7 tools)
-  tsconfig/        Shared TypeScript config
-  eslint-config/   Shared ESLint config
-```
-
-## Running Checks
-
-```bash
-pnpm build          # Build all packages
-pnpm test           # Run all tests
-pnpm lint           # Lint all packages
-pnpm format:check   # Check formatting
-```
+1.  **Always use `outputSchema` + `structuredContent`** — This is Pare's core differentiator.
+2.  **Strip aggressively** — Only include data an agent would act on. No decorations or unnecessary text.
+3.  **Use `execFile`, not `exec`** — Prevents shell injection.
+4.  **Test with real output** — Use raw CLI output as test fixtures.
 
 ## Commit Messages
 
 Use conventional commits:
 
-- `feat(git): add stash tool`
-- `fix(shared): handle binary file in ANSI strip`
-- `docs: update README with npm server example`
-- `chore: update dependencies`
+-   `feat(git): add stash tool`
+-   `fix(shared): handle binary file in ANSI strip`
+-   `docs: update README with npm server example`
+-   `chore: update dependencies`
